@@ -1,6 +1,12 @@
+import 'package:deep_linking/splash_screen.dart';
+import 'package:deep_linking/unilink_service.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_links/uni_links.dart';
 
-void main() {
+// Define the navigatorKey globally
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  UniLinksService.init(); // no await
   runApp(const MyApp());
 }
 
@@ -9,80 +15,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Deep Linking',
-      home: HomeScreen(),
+      debugShowCheckedModeBanner: false,
+      home: const SplashScreen(),
+      navigatorKey: NavigationService.navigatorKey,
     );
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home Screen"),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (con) {
-              return const DetailScreen();
-            }));
-          },
-          child: Container(
-            height: 50,
-            width: 100,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.teal[100],
-            ),
-            child: const Center(
-              child: Text("Detail Screen"),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class DetailScreen extends StatefulWidget {
-  const DetailScreen({super.key});
-
-  @override
-  State<DetailScreen> createState() => _DetailScreenState();
-}
-
-class _DetailScreenState extends State<DetailScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Detail Screen"),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Container(
-          height: 50,
-          width: 100,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.teal[100],
-          ),
-          child: const Center(
-            child: Text("This is detail screen"),
-          ),
-        ),
-      ),
-    );
-  }
+class NavigationService {
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

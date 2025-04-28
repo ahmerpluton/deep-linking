@@ -81,6 +81,7 @@ class UniLinksService {
       if (kDebugMode) print("(FormatException) Malformed Initial URI received. Error: $error");
     }
 
+    // Listen for live incoming links while app is running
     uriLinkStream.listen((Uri? uri) async {
       if (kDebugMode) print("Incoming link while running: ${uri.toString()}");
       await _uniLinkHandler(uri: uri);
@@ -89,25 +90,32 @@ class UniLinksService {
     });
   }
 
-  static Future<void> handleInitialUriIfNeeded() async {
+  // Return true if a link was handled, false otherwise
+  static Future<bool> handleInitialUriIfNeeded() async {
     if (_initialUri != null) {
       await _uniLinkHandler(uri: _initialUri);
-      _initialUri = null; // Important! So it doesn’t re-handle again
+      _initialUri = null; // Important!
+      return true;
     }
+    return false;
   }
 
   static Future<void> _uniLinkHandler({required Uri? uri}) async {
     try {
       if (uri == null) return;
 
+      if (kDebugMode) print("Handling URI: ${uri.toString()}");
+
       if (uri.host == 'deeplinksweb.web.app' && uri.path == '/detail') {
         String? id = uri.queryParameters['Id'];
         String? price = uri.queryParameters['price'];
 
         if ((id == null || id.isEmpty) && (price == null || price.isEmpty)) {
-          throw Exception("data not found in the deep link");
+          RoutingService.pushAndRemoveUntil(const HomeScreen());
+          throw Exception("Data not found in the deep link");
         }
 
+        // ✅ Just push Detail screen (no replacement, no remove)
         RoutingService.push(DetailScreen(
           data1: id.toString(),
           data2: price.toString(),

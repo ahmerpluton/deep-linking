@@ -11,16 +11,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Future<void> handleUserNavigation() async {
-    await Future.delayed(const Duration(seconds: 3));
-    await UniLinksService.handleInitialUriIfNeeded();
-    RoutingService.pushAndRemoveUntil(const HomeScreen());
-  }
-
   @override
   void initState() {
-    handleUserNavigation();
     super.initState();
+    _handleNavigation();
+  }
+
+  Future<void> _handleNavigation() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    bool isDeepLinkHandled = await UniLinksService.handleInitialUriIfNeeded();
+
+    if (!isDeepLinkHandled) {
+      RoutingService.pushReplacement(const HomeScreen());
+    }
   }
 
   @override
@@ -28,6 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          // Background Image
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -35,34 +40,32 @@ class _SplashScreenState extends State<SplashScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Stack(
-              children: [
-                Positioned(
-                  bottom: 50,
-                  right: 10,
-                  left: 10,
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Container(
-                        height: 48,
-                        width: 200,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(24), color: Colors.white),
-                        child: const Center(
-                          child: Text(
-                            "Get Started",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
+          ),
+
+          // Get Started Button (Not clickable)
+          Positioned(
+            bottom: 50,
+            right: 10,
+            left: 10,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                height: 48,
+                width: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  color: Colors.white,
+                ),
+                child: const Center(
+                  child: Text(
+                    "Get Started",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ],

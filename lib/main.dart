@@ -27,3 +27,9 @@ class MyApp extends StatelessWidget {
 class NavigationService {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }
+
+
+// https://deeplinksweb.web.app/
+// https://deeplinksweb.web.app/some
+// https://deeplinksweb.web.app/detail?Id=12000&price=3340
+// https://deeplinksweb.web.app/detail?
